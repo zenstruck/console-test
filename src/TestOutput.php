@@ -13,6 +13,9 @@ final class TestOutput
     private int $statusCode;
     private string $output;
 
+    /**
+     * @internal
+     */
     public function __construct(int $statusCode, string $output)
     {
         $this->statusCode = $statusCode;
