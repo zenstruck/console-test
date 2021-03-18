@@ -8,7 +8,7 @@ use Symfony\Component\VarDumper\VarDumper;
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-final class TestOutput
+final class CommandResult
 {
     private int $statusCode;
     private string $output;

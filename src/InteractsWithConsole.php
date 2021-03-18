@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 trait InteractsWithConsole
 {
-    final protected function executeConsoleCommand(string $command, array $inputs = []): TestOutput
+    final protected function executeConsoleCommand(string $command, array $inputs = []): CommandResult
     {
         return $this->consoleCommand($command)
             ->withInput($inputs)

@@ -92,7 +92,7 @@ final class TestCommand
         return $this;
     }
 
-    public function execute(): TestOutput
+    public function execute(): CommandResult
     {
         $this->application->setAutoExit(false);
         $this->application->setCatchExceptions($this->catchExceptions);

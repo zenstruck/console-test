@@ -24,7 +24,7 @@ final class ApplicationTester
         $this->input = $input;
     }
 
-    public function execute(): TestOutput
+    public function execute(): CommandResult
     {
         if ($this->inputs) {
             $this->input->setStream(self::createStream($this->inputs));
@@ -34,6 +34,6 @@ final class ApplicationTester
 
         $statusCode = $this->application->run($this->input, $this->output);
 
-        return new TestOutput($statusCode, $this->getDisplay());
+        return new CommandResult($statusCode, $this->getDisplay());
     }
 }
