@@ -33,6 +33,7 @@ final class Kernel extends BaseKernel
             'secret' => 'S3CRET',
             'test' => true,
             'router' => ['utf8' => true],
+            'secrets' => false,
         ]);
     }
 
