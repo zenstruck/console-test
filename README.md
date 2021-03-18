@@ -36,12 +36,13 @@ class CreateUserCommandTest extends KernelTestCase
             ->assertOutputContains('with roles: ROLE_EMPLOYEE, ROLE_MANAGER')
             ->assertOutputNotContains('regular user')
         ;
-        
+
         // advanced usage
         $this->consoleCommand(CreateUserCommand::class) // can use the command class or "name"
             ->addArgument('kbond')
             ->addOption('--admin') // with or without "--" prefix
             ->addOption('role', ['ROLE_EMPLOYEE', 'ROLE_MANAGER'])
+            ->addOption('-v') // shortcut options require the "-" prefix
             ->catchExceptions() // by default, exceptions are thrown
             ->execute() // run the command
             ->assertSuccessful()
@@ -85,6 +86,7 @@ class CreateUserCommandTest extends TestCase
             ->addArgument('kbond')
             ->addOption('--admin') // with or without "--" prefix
             ->addOption('role', ['ROLE_EMPLOYEE', 'ROLE_MANAGER'])
+            ->addOption('-v') // shortcut options require the "-" prefix
             ->catchExceptions() // by default, exceptions are thrown
             ->execute()
             ->assertSuccessful()

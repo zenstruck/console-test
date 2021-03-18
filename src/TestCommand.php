@@ -50,7 +50,7 @@ final class TestCommand
      */
     public function addOption(string $name, $value = null): self
     {
-        $name = \sprintf('--%s', \ltrim($name, '-'));
+        $name = 0 !== \mb_strpos($name, '-') ? "--{$name}" : $name;
         $value = $value ?? [null];
 
         foreach ((array) $value as $item) {

@@ -11,6 +11,8 @@ use Zenstruck\Console\Test\Tests\Fixture\FixtureCommand;
  */
 final class UnitTest extends TestCase
 {
+    use ResetVerbosity;
+
     /**
      * @test
      */
@@ -34,6 +36,42 @@ final class UnitTest extends TestCase
             ->assertOutputContains('Executing command')
             ->assertOutputContains('arg1 value: foobar')
             ->assertOutputNotContains('opt1')
+        ;
+    }
+
+    /**
+     * @test
+     */
+    public function default_verbosity_and_decorated(): void
+    {
+        TestCommand::for(new FixtureCommand())
+            ->execute()
+            ->assertOutputContains('verbosity: 32')
+            ->assertOutputContains('decorated: no')
+        ;
+    }
+
+    /**
+     * @test
+     */
+    public function can_decorate_with_ansi_option(): void
+    {
+        TestCommand::for(new FixtureCommand())
+            ->addOption('--ansi')
+            ->execute()
+            ->assertOutputContains('decorated: yes')
+        ;
+    }
+
+    /**
+     * @test
+     */
+    public function can_adjust_verbosity_with_v_option(): void
+    {
+        TestCommand::for(new FixtureCommand())
+            ->addOption('-vv')
+            ->execute()
+            ->assertOutputContains('verbosity: 128')
         ;
     }
 }

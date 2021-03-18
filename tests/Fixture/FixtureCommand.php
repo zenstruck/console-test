@@ -32,6 +32,8 @@ final class FixtureCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('Executing <info>command</info>...');
+        $output->writeln("verbosity: {$output->getVerbosity()}");
+        $output->writeln('decorated: '.($output->isDecorated() ? 'yes' : 'no'));
 
         if ($input->getOption('throw')) {
             throw new \RuntimeException('Exception thrown!');

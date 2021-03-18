@@ -12,7 +12,7 @@ use Zenstruck\Console\Test\Tests\Fixture\FixtureCommand;
  */
 final class FunctionalTest extends KernelTestCase
 {
-    use InteractsWithConsole;
+    use InteractsWithConsole, ResetVerbosity;
 
     /**
      * @test
@@ -123,6 +123,37 @@ final class FunctionalTest extends KernelTestCase
             ->assertOutputContains('Executing command')
             ->assertOutputContains('arg1 value: foobar')
             ->assertOutputNotContains('opt1')
+        ;
+    }
+
+    /**
+     * @test
+     */
+    public function default_verbosity_and_decorated(): void
+    {
+        $this->executeConsoleCommand('fixture:command')
+            ->assertOutputContains('verbosity: 32')
+            ->assertOutputContains('decorated: no')
+        ;
+    }
+
+    /**
+     * @test
+     */
+    public function can_decorate_with_ansi_option(): void
+    {
+        $this->executeConsoleCommand('fixture:command --ansi')
+            ->assertOutputContains('decorated: yes')
+        ;
+    }
+
+    /**
+     * @test
+     */
+    public function can_adjust_verbosity_with_v_option(): void
+    {
+        $this->executeConsoleCommand('fixture:command -vv')
+            ->assertOutputContains('verbosity: 128')
         ;
     }
 }
