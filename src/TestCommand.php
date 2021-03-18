@@ -30,12 +30,12 @@ final class TestCommand
         $this->command = $command;
     }
 
-    public static function for(Command $command, array $inputs = []): self
+    public static function for(Command $command, array $input = []): self
     {
         $application = new Application();
         $application->add($command);
 
-        return (new self($application, $command->getName()))->withInput($inputs);
+        return (new self($application, $command->getName()))->withInput($input);
     }
 
     public function addArgument(string $value): self

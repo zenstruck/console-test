@@ -14,6 +14,93 @@ and helps make your tests more expressive and concise.
 composer require --dev zenstruck/console-test
 ```
 
-## Usage
+## Symfony Framework Usage
 
-TODO...
+You can run console commands in your tests by using the `InteractsWithConsole` trait in your
+`KernelTestCase`/`WebTestCase` tests:
+
+```php
+use App\Command\CreateUserCommand;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Zenstruck\Console\Test\InteractsWithConsole;
+
+class CreateUserCommandTest extends KernelTestCase
+{
+    use InteractsWithConsole;
+    
+    public function test_can_create_user(): void
+    {
+        $this->executeConsoleCommand('create:user kbond --admin --role=ROLE_EMPLOYEE --role=ROLE_MANAGER')
+            ->assertSuccessful() // command exit code is 0
+            ->assertOutputContains('Creating admin user "kbond"')
+            ->assertOutputContains('with roles: ROLE_EMPLOYEE, ROLE_MANAGER')
+            ->assertOutputNotContains('regular user')
+        ;
+        
+        // advanced usage
+        $this->consoleCommand(CreateUserCommand::class) // can use the command class or "name"
+            ->addArgument('kbond')
+            ->addOption('--admin') // with or without "--" prefix
+            ->addOption('role', ['ROLE_EMPLOYEE', 'ROLE_MANAGER'])
+            ->catchExceptions() // by default, exceptions are thrown
+            ->execute() // run the command
+            ->assertSuccessful()
+            ->assertStatusCode(0) // equivalent to ->assertSuccessful()
+            ->assertOutputContains('Creating admin user "kbond"')
+            ->dump() // dump() the status code/output and continue
+            ->dd() // dd() the status code/output
+        ;
+
+        // testing interactive commands
+        $this->executeConsoleCommand('create:user', ['kbond'])
+            ->assertSuccessful()
+            ->assertOutputContains('Creating regular user "kbond"')
+        ;
+        
+        // advanced testing interactive commands
+        $this->consoleCommand(CreateUserCommand::class)
+            ->addInput('kbond')
+            ->execute()
+            ->assertSuccessful()
+            ->assertOutputContains('Creating regular user "kbond"')
+        ;
+    }
+}
+```
+
+## Standalone Usage
+
+You can test commands in unit tests or in a non-Symfony Framework context:
+
+```php
+use App\Command\CreateUserCommand;
+use PHPUnit\Framework\TestCase;
+use Zenstruck\Console\Test\TestCommand;
+
+class CreateUserCommandTest extends TestCase
+{
+    public function test_can_create_user(): void
+    {
+        TestCommand::for(new CreateUserCommand(/** args... */))
+            ->addArgument('kbond')
+            ->addOption('--admin') // with or without "--" prefix
+            ->addOption('role', ['ROLE_EMPLOYEE', 'ROLE_MANAGER'])
+            ->catchExceptions() // by default, exceptions are thrown
+            ->execute()
+            ->assertSuccessful()
+            ->assertStatusCode(0) // equivalent to ->assertSuccessful()
+            ->assertOutputContains('Creating admin user "kbond"')
+            ->dump() // dump() the status code/output and continue
+            ->dd() // dd() the status code/output
+        ;
+        
+        // testing interactive commands
+        TestCommand::for(new CreateUserCommand(/** args... */))
+            ->addInput('kbond')
+            ->execute()
+            ->assertSuccessful()
+            ->assertOutputContains('Creating regular user "kbond"')
+        ;
+    }
+}
+```
