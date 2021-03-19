@@ -14,6 +14,7 @@ final class TestCommand
     private Command $command;
     private string $cli;
     private array $inputs = [];
+    private bool $splitOutputStreams = false;
 
     private function __construct(Command $command, string $cli)
     {
@@ -39,6 +40,13 @@ final class TestCommand
         }
 
         return new self($application->find(\explode(' ', $cli, 2)[0]), $cli);
+    }
+
+    public function splitOutputStreams(): self
+    {
+        $this->splitOutputStreams = true;
+
+        return $this;
     }
 
     public function addArgument(string $value): self
@@ -86,6 +94,6 @@ final class TestCommand
         $tester = new CommandTester($this->command, new StringInput($this->cli));
         $tester->setInputs($this->inputs);
 
-        return $tester->execute();
+        return $tester->execute($this->splitOutputStreams);
     }
 }

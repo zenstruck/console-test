@@ -25,7 +25,7 @@ final class CommandTester
         $this->input = $input;
     }
 
-    public function execute(): CommandResult
+    public function execute(bool $splitStreams): CommandResult
     {
         $this->input->setInteractive(false);
 
@@ -41,12 +41,12 @@ final class CommandTester
         $this->initOutput([
             'decorated' => true === $this->input->hasParameterOption(['--ansi'], true),
             'verbosity' => $this->verbosity(),
-            'capture_stderr_separately' => true,
+            'capture_stderr_separately' => $splitStreams,
         ]);
 
         $statusCode = $this->command->run($this->input, $this->output);
 
-        return new CommandResult($statusCode, $this->getDisplay(), $this->getErrorOutput());
+        return new CommandResult($statusCode, $this->getDisplay(), $splitStreams ? $this->getErrorOutput() : '');
     }
 
     private function verbosity(): int

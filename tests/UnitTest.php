@@ -21,6 +21,22 @@ final class UnitTest extends TestCase
             ->assertOutputContains('Executing command')
             ->assertOutputNotContains('arg1')
             ->assertOutputNotContains('opt1')
+            ->assertOutputContains('Error output')
+        ;
+    }
+
+    /**
+     * @test
+     */
+    public function can_split_output_streams(): void
+    {
+        TestCommand::for(new FixtureCommand())
+            ->splitOutputStreams()
+            ->execute()
+            ->assertSuccessful()
+            ->assertOutputContains('Executing command')
+            ->assertOutputNotContains('arg1')
+            ->assertOutputNotContains('opt1')
             ->assertOutputNotContains('Error output')
             ->assertErrorOutputContains('Error output')
             ->assertErrorOutputNotContains('Executing command')

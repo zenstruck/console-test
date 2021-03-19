@@ -39,6 +39,7 @@ class CreateUserCommandTest extends KernelTestCase
 
         // advanced usage
         $this->consoleCommand(CreateUserCommand::class) // can use the command class or "name"
+            ->splitOutputStreams() // by default stdout/stderr are combined, this options splits them
             ->addArgument('kbond')
             ->addOption('--admin') // with or without "--" prefix
             ->addOption('role', ['ROLE_EMPLOYEE', 'ROLE_MANAGER'])
@@ -49,8 +50,8 @@ class CreateUserCommandTest extends KernelTestCase
             ->assertSuccessful()
             ->assertStatusCode(0) // equivalent to ->assertSuccessful()
             ->assertOutputContains('Creating admin user "kbond"')
-            ->assertErrorOutputContains('this is in stderr')
-            ->assertErrorOutputNotContains('admin user')
+            ->assertErrorOutputContains('this is in stderr') // used in conjunction with ->splitOutputStreams()
+            ->assertErrorOutputNotContains('admin user') // used in conjunction with ->splitOutputStreams()
             ->dump() // dump() the status code/outputs and continue
             ->dd() // dd() the status code/outputs
         ;
@@ -94,6 +95,7 @@ class CreateUserCommandTest extends TestCase
     public function test_can_create_user(): void
     {
         TestCommand::for(new CreateUserCommand(/** args... */))
+            ->splitOutputStreams() // by default stdout/stderr are combined, this options splits them
             ->addArgument('kbond')
             ->addOption('--admin') // with or without "--" prefix
             ->addOption('role', ['ROLE_EMPLOYEE', 'ROLE_MANAGER'])
@@ -104,8 +106,8 @@ class CreateUserCommandTest extends TestCase
             ->assertSuccessful()
             ->assertStatusCode(0) // equivalent to ->assertSuccessful()
             ->assertOutputContains('Creating admin user "kbond"')
-            ->assertErrorOutputContains('this is in stderr')
-            ->assertErrorOutputNotContains('admin user')
+            ->assertErrorOutputContains('this is in stderr') // used in conjunction with ->splitOutputStreams()
+            ->assertErrorOutputNotContains('admin user') // used in conjunction with ->splitOutputStreams()
             ->dump() // dump() the status code/outputs and continue
             ->dd() // dd() the status code/outputs
         ;

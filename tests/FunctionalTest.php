@@ -24,6 +24,22 @@ final class FunctionalTest extends KernelTestCase
             ->assertOutputContains('Executing command')
             ->assertOutputNotContains('arg1')
             ->assertOutputNotContains('opt1')
+            ->assertOutputContains('Error output')
+        ;
+    }
+
+    /**
+     * @test
+     */
+    public function can_split_output_streams(): void
+    {
+        $this->consoleCommand('fixture:command')
+            ->splitOutputStreams()
+            ->execute()
+            ->assertSuccessful()
+            ->assertOutputContains('Executing command')
+            ->assertOutputNotContains('arg1')
+            ->assertOutputNotContains('opt1')
             ->assertOutputNotContains('Error output')
             ->assertErrorOutputContains('Error output')
             ->assertErrorOutputNotContains('Executing command')
