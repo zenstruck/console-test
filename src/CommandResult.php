@@ -12,14 +12,16 @@ final class CommandResult
 {
     private int $statusCode;
     private string $output;
+    private string $errorOutput;
 
     /**
      * @internal
      */
-    public function __construct(int $statusCode, string $output)
+    public function __construct(int $statusCode, string $output, string $errorOutput)
     {
         $this->statusCode = $statusCode;
         $this->output = $output;
+        $this->errorOutput = $errorOutput;
     }
 
     public function statusCode(): int
@@ -32,6 +34,11 @@ final class CommandResult
         return $this->output;
     }
 
+    public function errorOutput(): string
+    {
+        return $this->errorOutput;
+    }
+
     public function assertOutputContains(string $expected): self
     {
         PHPUnit::assertStringContainsString($expected, $this->output());
@@ -42,6 +49,20 @@ final class CommandResult
     public function assertOutputNotContains(string $expected): self
     {
         PHPUnit::assertStringNotContainsString($expected, $this->output());
+
+        return $this;
+    }
+
+    public function assertErrorOutputContains(string $expected): self
+    {
+        PHPUnit::assertStringContainsString($expected, $this->errorOutput());
+
+        return $this;
+    }
+
+    public function assertErrorOutputNotContains(string $expected): self
+    {
+        PHPUnit::assertStringNotContainsString($expected, $this->errorOutput());
 
         return $this;
     }
@@ -62,6 +83,7 @@ final class CommandResult
     {
         VarDumper::dump("Status: {$this->statusCode()}");
         VarDumper::dump($this->output());
+        VarDumper::dump($this->errorOutput());
 
         return $this;
     }

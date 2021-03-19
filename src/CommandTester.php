@@ -41,11 +41,12 @@ final class CommandTester
         $this->initOutput([
             'decorated' => true === $this->input->hasParameterOption(['--ansi'], true),
             'verbosity' => $this->verbosity(),
+            'capture_stderr_separately' => true,
         ]);
 
         $statusCode = $this->command->run($this->input, $this->output);
 
-        return new CommandResult($statusCode, $this->getDisplay());
+        return new CommandResult($statusCode, $this->getDisplay(), $this->getErrorOutput());
     }
 
     private function verbosity(): int

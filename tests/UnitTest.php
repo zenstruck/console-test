@@ -21,6 +21,9 @@ final class UnitTest extends TestCase
             ->assertOutputContains('Executing command')
             ->assertOutputNotContains('arg1')
             ->assertOutputNotContains('opt1')
+            ->assertOutputNotContains('Error output')
+            ->assertErrorOutputContains('Error output')
+            ->assertErrorOutputNotContains('Executing command')
         ;
     }
 

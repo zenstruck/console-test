@@ -49,8 +49,10 @@ class CreateUserCommandTest extends KernelTestCase
             ->assertSuccessful()
             ->assertStatusCode(0) // equivalent to ->assertSuccessful()
             ->assertOutputContains('Creating admin user "kbond"')
-            ->dump() // dump() the status code/output and continue
-            ->dd() // dd() the status code/output
+            ->assertErrorOutputContains('this is in stderr')
+            ->assertErrorOutputNotContains('admin user')
+            ->dump() // dump() the status code/outputs and continue
+            ->dd() // dd() the status code/outputs
         ;
 
         // testing interactive commands
@@ -67,6 +69,13 @@ class CreateUserCommandTest extends KernelTestCase
             ->assertSuccessful()
             ->assertOutputContains('Creating regular user "kbond"')
         ;
+        
+        // access result
+        $result = $this->executeConsoleCommand('create:user');
+
+        $result->statusCode();
+        $result->output(); 
+        $result->errorOutput(); 
     }
 }
 ```
@@ -95,8 +104,10 @@ class CreateUserCommandTest extends TestCase
             ->assertSuccessful()
             ->assertStatusCode(0) // equivalent to ->assertSuccessful()
             ->assertOutputContains('Creating admin user "kbond"')
-            ->dump() // dump() the status code/output and continue
-            ->dd() // dd() the status code/output
+            ->assertErrorOutputContains('this is in stderr')
+            ->assertErrorOutputNotContains('admin user')
+            ->dump() // dump() the status code/outputs and continue
+            ->dd() // dd() the status code/outputs
         ;
         
         // testing interactive commands
@@ -107,6 +118,13 @@ class CreateUserCommandTest extends TestCase
             ->assertSuccessful()
             ->assertOutputContains('Creating regular user "kbond"')
         ;
+
+        // access result
+        $result = TestCommand::for(new CreateUserCommand(/** args... */))->execute();
+
+        $result->statusCode();
+        $result->output(); 
+        $result->errorOutput(); 
     }
 }
 ```
