@@ -28,6 +28,6 @@ trait InteractsWithConsole
             static::bootKernel();
         }
 
-        return new TestCommand(new Application(self::$kernel), $command);
+        return TestCommand::from(new Application(self::$kernel), $command);
     }
 }

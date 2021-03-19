@@ -42,8 +42,9 @@ class CreateUserCommandTest extends KernelTestCase
             ->addArgument('kbond')
             ->addOption('--admin') // with or without "--" prefix
             ->addOption('role', ['ROLE_EMPLOYEE', 'ROLE_MANAGER'])
-            ->addOption('-v') // shortcut options require the "-" prefix
-            ->catchExceptions() // by default, exceptions are thrown
+            ->addOption('-R') // shortcut options require the "-" prefix
+            ->addOption('-vv') // by default, output has normal verbosity, use the standard options to change (-q, -v, -vv, -vvv)
+            ->addOption('--ansi') // by default, output is undecorated, use this option to decorate
             ->execute() // run the command
             ->assertSuccessful()
             ->assertStatusCode(0) // equivalent to ->assertSuccessful()
@@ -61,6 +62,7 @@ class CreateUserCommandTest extends KernelTestCase
         // advanced testing interactive commands
         $this->consoleCommand(CreateUserCommand::class)
             ->addInput('kbond')
+            ->addOption('--no-interaction') // commands are run interactively if input is provided, use this option to disable
             ->execute()
             ->assertSuccessful()
             ->assertOutputContains('Creating regular user "kbond"')
@@ -86,8 +88,9 @@ class CreateUserCommandTest extends TestCase
             ->addArgument('kbond')
             ->addOption('--admin') // with or without "--" prefix
             ->addOption('role', ['ROLE_EMPLOYEE', 'ROLE_MANAGER'])
-            ->addOption('-v') // shortcut options require the "-" prefix
-            ->catchExceptions() // by default, exceptions are thrown
+            ->addOption('-R') // shortcut options require the "-" prefix
+            ->addOption('-vv') // by default, output has normal verbosity, use the standard options to change (-q, -v, -vv, -vvv)
+            ->addOption('--ansi') // by default, output is undecorated, use this option to decorate
             ->execute()
             ->assertSuccessful()
             ->assertStatusCode(0) // equivalent to ->assertSuccessful()
@@ -99,6 +102,7 @@ class CreateUserCommandTest extends TestCase
         // testing interactive commands
         TestCommand::for(new CreateUserCommand(/** args... */))
             ->addInput('kbond')
+            ->addOption('--no-interaction') // commands are run interactively if input is provided, use this option to disable
             ->execute()
             ->assertSuccessful()
             ->assertOutputContains('Creating regular user "kbond"')

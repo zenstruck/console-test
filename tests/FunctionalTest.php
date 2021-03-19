@@ -12,7 +12,7 @@ use Zenstruck\Console\Test\Tests\Fixture\FixtureCommand;
  */
 final class FunctionalTest extends KernelTestCase
 {
-    use InteractsWithConsole, ResetVerbosity;
+    use InteractsWithConsole;
 
     /**
      * @test
@@ -92,20 +92,7 @@ final class FunctionalTest extends KernelTestCase
     /**
      * @test
      */
-    public function exceptions_caught_by_default(): void
-    {
-        $this->consoleCommand('fixture:command --throw')
-            ->catchExceptions()
-            ->execute()
-            ->assertStatusCode(1)
-            ->assertOutputContains('Exception thrown!')
-        ;
-    }
-
-    /**
-     * @test
-     */
-    public function exceptions_thrown_by_default(): void
+    public function exceptions_from_commands_are_thrown(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Exception thrown!');
@@ -154,6 +141,17 @@ final class FunctionalTest extends KernelTestCase
     {
         $this->executeConsoleCommand('fixture:command -vv')
             ->assertOutputContains('verbosity: 128')
+        ;
+    }
+
+    /**
+     * @test
+     */
+    public function can_turn_off_interaction(): void
+    {
+        $this->executeConsoleCommand('fixture:command -n', ['kbond'])
+            ->assertOutputNotContains('arg1')
+            ->assertOutputNotContains('kbond')
         ;
     }
 }

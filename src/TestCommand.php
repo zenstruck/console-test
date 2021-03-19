@@ -11,36 +11,39 @@ use Symfony\Component\Console\Input\StringInput;
  */
 final class TestCommand
 {
-    private Application $application;
-    private string $command;
+    private Command $command;
+    private string $cli;
     private array $inputs = [];
-    private bool $catchExceptions = false;
 
-    public function __construct(Application $application, string $command)
+    private function __construct(Command $command, string $cli)
+    {
+        if (!$command->getApplication()) {
+            $command->setApplication(new Application());
+        }
+
+        $this->command = $command;
+        $this->cli = $cli;
+    }
+
+    public static function for(Command $command): self
+    {
+        return new self($command, $command->getName());
+    }
+
+    public static function from(Application $application, string $cli): self
     {
         foreach ($application->all() as $name => $commandObject) {
-            if ($command === \get_class($commandObject)) {
-                $command = $name;
-
-                break;
+            if ($cli === \get_class($commandObject)) {
+                return self::for($commandObject);
             }
         }
 
-        $this->application = $application;
-        $this->command = $command;
-    }
-
-    public static function for(Command $command, array $input = []): self
-    {
-        $application = new Application();
-        $application->add($command);
-
-        return (new self($application, $command->getName()))->withInput($input);
+        return new self($application->find(\explode(' ', $cli, 2)[0]), $cli);
     }
 
     public function addArgument(string $value): self
     {
-        $this->command .= \sprintf(' "%s"', $value);
+        $this->cli .= \sprintf(' "%s"', $value);
 
         return $this;
     }
@@ -54,10 +57,10 @@ final class TestCommand
         $value = $value ?? [null];
 
         foreach ((array) $value as $item) {
-            $this->command .= " {$name}";
+            $this->cli .= " {$name}";
 
             if ($item) {
-                $this->command .= \sprintf('="%s"', $item);
+                $this->cli .= \sprintf('="%s"', $item);
             }
         }
 
@@ -78,29 +81,9 @@ final class TestCommand
         return $this;
     }
 
-    public function throwExceptions(): self
-    {
-        $this->catchExceptions = false;
-
-        return $this;
-    }
-
-    public function catchExceptions(): self
-    {
-        $this->catchExceptions = true;
-
-        return $this;
-    }
-
     public function execute(): CommandResult
     {
-        $this->application->setAutoExit(false);
-        $this->application->setCatchExceptions($this->catchExceptions);
-
-        $input = new StringInput($this->command);
-        $input->setInteractive($this->inputs ? true : false);
-
-        $tester = new ApplicationTester($this->application, $input);
+        $tester = new CommandTester($this->command, new StringInput($this->cli));
         $tester->setInputs($this->inputs);
 
         return $tester->execute();

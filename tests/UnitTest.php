@@ -11,8 +11,6 @@ use Zenstruck\Console\Test\Tests\Fixture\FixtureCommand;
  */
 final class UnitTest extends TestCase
 {
-    use ResetVerbosity;
-
     /**
      * @test
      */
@@ -29,9 +27,34 @@ final class UnitTest extends TestCase
     /**
      * @test
      */
+    public function command_with_arguments_and_options(): void
+    {
+        TestCommand::for(new FixtureCommand())
+            ->addArgument('value')
+            ->addOption('opt1')
+            ->addOption('--opt2', 'v1')
+            ->addOption('--opt3', ['v2', 'v3'])
+            ->addOption('--opt3', 'v4')
+            ->execute()
+            ->assertSuccessful()
+            ->assertOutputContains('Executing command')
+            ->assertOutputContains('arg1 value: value')
+            ->assertOutputContains('opt1 option set')
+            ->assertOutputContains('opt2 value: v1')
+            ->assertOutputContains('opt3 value: v2')
+            ->assertOutputContains('opt3 value: v3')
+            ->assertOutputContains('opt3 value: v4')
+        ;
+    }
+
+    /**
+     * @test
+     */
     public function can_add_input(): void
     {
-        TestCommand::for(new FixtureCommand(), ['foobar'])->execute()
+        TestCommand::for(new FixtureCommand())
+            ->addInput('foobar')
+            ->execute()
             ->assertSuccessful()
             ->assertOutputContains('Executing command')
             ->assertOutputContains('arg1 value: foobar')
@@ -72,6 +95,20 @@ final class UnitTest extends TestCase
             ->addOption('-vv')
             ->execute()
             ->assertOutputContains('verbosity: 128')
+        ;
+    }
+
+    /**
+     * @test
+     */
+    public function can_turn_off_interaction(): void
+    {
+        TestCommand::for(new FixtureCommand())
+            ->addInput('kbond')
+            ->addOption('-n')
+            ->execute()
+            ->assertOutputNotContains('arg1')
+            ->assertOutputNotContains('kbond')
         ;
     }
 }
