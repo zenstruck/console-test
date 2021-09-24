@@ -130,4 +130,16 @@ final class UnitTest extends TestCase
             ->assertOutputNotContains('kbond')
         ;
     }
+
+    /**
+     * @test
+     */
+    public function terminal_width_is_standardized(): void
+    {
+        TestCommand::for(new FixtureCommand())
+            ->execute()
+            ->assertOutputContains(' [OK] Long link:                                                                                                        ')
+            ->assertOutputContains('      https://github.com/zenstruck/console-test/blob/997ee1f66743342ffd9cd00a77613ebfa2efd2b8/src/CommandResult.php     ')
+        ;
+    }
 }

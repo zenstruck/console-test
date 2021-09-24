@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
@@ -58,6 +59,8 @@ final class FixtureCommand extends Command
         foreach ($input->getOption('opt3') as $value) {
             $output->writeln("opt3 value: {$value}");
         }
+
+        (new SymfonyStyle($input, $output))->success('Long link: https://github.com/zenstruck/console-test/blob/997ee1f66743342ffd9cd00a77613ebfa2efd2b8/src/CommandResult.php');
 
         return (int) $input->getOption('code');
     }
