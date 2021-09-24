@@ -130,3 +130,23 @@ class CreateUserCommandTest extends TestCase
     }
 }
 ```
+
+## Standardize Terminal Width
+
+Under different terminal environments (ie Windows, Linux, Github Actions) the default
+terminal width can be calculated differently. Since certain Symfony output helpers
+use this to wrap long lines this can lead to output assertions failing in different
+environments. It is recommended to standardize the terminal width by setting the
+`COLUMNS` environment variable for your test suite:
+
+```xml
+<!-- phpunit.xml -->
+
+<phpunit>
+    <!-- ... -->
+    <php>
+        <env name="COLUMNS" value="120" />
+    </php>
+    <!-- ... -->
+</phpunit>
+```
