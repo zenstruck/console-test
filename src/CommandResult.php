@@ -2,8 +2,8 @@
 
 namespace Zenstruck\Console\Test;
 
-use PHPUnit\Framework\Assert as PHPUnit;
 use Symfony\Component\VarDumper\VarDumper;
+use Zenstruck\Assert;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
@@ -41,28 +41,28 @@ final class CommandResult
 
     public function assertOutputContains(string $expected): self
     {
-        PHPUnit::assertStringContainsString($expected, $this->output());
+        Assert::that($this->output())->contains($expected);
 
         return $this;
     }
 
     public function assertOutputNotContains(string $expected): self
     {
-        PHPUnit::assertStringNotContainsString($expected, $this->output());
+        Assert::that($this->output())->doesNotContain($expected);
 
         return $this;
     }
 
     public function assertErrorOutputContains(string $expected): self
     {
-        PHPUnit::assertStringContainsString($expected, $this->errorOutput());
+        Assert::that($this->errorOutput())->contains($expected);
 
         return $this;
     }
 
     public function assertErrorOutputNotContains(string $expected): self
     {
-        PHPUnit::assertStringNotContainsString($expected, $this->errorOutput());
+        Assert::that($this->errorOutput())->doesNotContain($expected);
 
         return $this;
     }
@@ -74,7 +74,7 @@ final class CommandResult
 
     public function assertStatusCode(int $expected): self
     {
-        PHPUnit::assertSame($expected, $this->statusCode());
+        Assert::that($this->statusCode())->is($expected);
 
         return $this;
     }
