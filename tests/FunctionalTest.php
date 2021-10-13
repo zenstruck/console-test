@@ -111,6 +111,23 @@ final class FunctionalTest extends KernelTestCase
     /**
      * @test
      */
+    public function can_pass_cli_to_execute(): void
+    {
+        $this->consoleCommand('fixture:command')
+            ->execute('value --opt1 --opt2=v1 --opt3=v2 --opt3=v3')
+            ->assertSuccessful()
+            ->assertOutputContains('Executing command')
+            ->assertOutputContains('arg1 value: value')
+            ->assertOutputContains('opt1 option set')
+            ->assertOutputContains('opt2 value: v1')
+            ->assertOutputContains('opt3 value: v2')
+            ->assertOutputContains('opt3 value: v3')
+        ;
+    }
+
+    /**
+     * @test
+     */
     public function exceptions_from_commands_are_thrown(): void
     {
         $this->expectException(\RuntimeException::class);

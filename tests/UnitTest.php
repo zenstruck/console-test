@@ -69,6 +69,45 @@ final class UnitTest extends TestCase
     /**
      * @test
      */
+    public function can_pass_raw_cli_to_execute(): void
+    {
+        TestCommand::for(new FixtureCommand())
+            ->execute('value --opt1 --opt2=v1 --opt3=v2 --opt3=v3 --opt3=v4')
+            ->assertSuccessful()
+            ->assertOutputContains('Executing command')
+            ->assertOutputContains('arg1 value: value')
+            ->assertOutputContains('opt1 option set')
+            ->assertOutputContains('opt2 value: v1')
+            ->assertOutputContains('opt3 value: v2')
+            ->assertOutputContains('opt3 value: v3')
+            ->assertOutputContains('opt3 value: v4')
+        ;
+    }
+
+    /**
+     * @test
+     */
+    public function can_mix_explicit_arguments_with_execute_cli(): void
+    {
+        TestCommand::for(new FixtureCommand())
+            ->addArgument('value')
+            ->addOption('opt1')
+            ->addOption('--opt2', 'v1')
+            ->execute('--opt3=v2 --opt3=v3 --opt3=v4')
+            ->assertSuccessful()
+            ->assertOutputContains('Executing command')
+            ->assertOutputContains('arg1 value: value')
+            ->assertOutputContains('opt1 option set')
+            ->assertOutputContains('opt2 value: v1')
+            ->assertOutputContains('opt3 value: v2')
+            ->assertOutputContains('opt3 value: v3')
+            ->assertOutputContains('opt3 value: v4')
+        ;
+    }
+
+    /**
+     * @test
+     */
     public function can_add_input(): void
     {
         TestCommand::for(new FixtureCommand())
