@@ -89,9 +89,11 @@ final class TestCommand
         return $this;
     }
 
-    public function execute(): CommandResult
+    public function execute(?string $cli = null): CommandResult
     {
-        $tester = new CommandTester($this->command, new StringInput($this->cli));
+        $cli = $cli ? \sprintf('%s %s', $this->cli, $cli) : $this->cli;
+
+        $tester = new CommandTester($this->command, new StringInput($cli));
         $tester->setInputs($this->inputs);
 
         return $tester->execute($this->splitOutputStreams);
