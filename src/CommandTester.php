@@ -4,7 +4,9 @@ namespace Zenstruck\Console\Test;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\Console\Tester\TesterTrait;
 
 /**
@@ -27,6 +29,7 @@ final class CommandTester
 
     public function execute(bool $splitStreams): CommandResult
     {
+        $this->captureStreamsIndependently = $splitStreams;
         $this->testInput->setInteractive(false);
 
         if ($this->inputs) {
@@ -38,15 +41,30 @@ final class CommandTester
             $this->testInput->setInteractive(false);
         }
 
-        $this->initOutput([
-            'decorated' => true === $this->testInput->hasParameterOption(['--ansi'], true),
-            'verbosity' => $this->verbosity(),
-            'capture_stderr_separately' => $splitStreams,
-        ]);
+        $this->output = new ConsoleOutput($this->verbosity(), $this->decorated());
+
+        if ($splitStreams) {
+            $errorOutput = new StreamOutput(\fopen('php://memory', 'w', false));
+            $errorOutput->setFormatter($this->output->getFormatter());
+            $errorOutput->setVerbosity($this->output->getVerbosity());
+            $errorOutput->setDecorated($this->output->isDecorated());
+        }
+
+        $this->output->setErrorOutput($errorOutput ?? $this->output);
+
+        $reflectedParent = (new \ReflectionObject($this->output))->getParentClass();
+        $streamProperty = $reflectedParent->getProperty('stream');
+        $streamProperty->setAccessible(true);
+        $streamProperty->setValue($this->output, \fopen('php://memory', 'w', false));
 
         $statusCode = $this->command->run($this->testInput, $this->output);
 
         return new CommandResult($statusCode, $this->getDisplay(), $splitStreams ? $this->getErrorOutput() : '');
+    }
+
+    private function decorated(): bool
+    {
+        return true === $this->testInput->hasParameterOption(['--ansi'], true);
     }
 
     private function verbosity(): int
