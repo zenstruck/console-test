@@ -181,4 +181,16 @@ final class UnitTest extends TestCase
             ->assertOutputContains('      https://github.com/zenstruck/console-test/blob/997ee1f66743342ffd9cd00a77613ebfa2efd2b8/src/CommandResult.php     ')
         ;
     }
+
+    /**
+     * @test
+     */
+    public function always_executes_with_console_output(): void
+    {
+        TestCommand::for(new FixtureCommand())
+            ->execute()
+            ->assertOutputContains('table row 1')
+            ->assertOutputContains('table row 2')
+        ;
+    }
 }

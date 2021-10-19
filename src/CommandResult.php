@@ -11,17 +11,15 @@ use Zenstruck\Assert;
 final class CommandResult
 {
     private int $statusCode;
-    private string $output;
-    private string $errorOutput;
+    private TestOutput $output;
 
     /**
      * @internal
      */
-    public function __construct(int $statusCode, string $output, string $errorOutput)
+    public function __construct(int $statusCode, TestOutput $output)
     {
         $this->statusCode = $statusCode;
         $this->output = $output;
-        $this->errorOutput = $errorOutput;
     }
 
     public function statusCode(): int
@@ -31,12 +29,12 @@ final class CommandResult
 
     public function output(): string
     {
-        return $this->output;
+        return $this->output->getDisplay();
     }
 
     public function errorOutput(): string
     {
-        return $this->errorOutput;
+        return $this->output->getErrorDisplay();
     }
 
     public function assertOutputContains(string $expected): self

@@ -3,10 +3,10 @@
 namespace Zenstruck\Console\Test\Tests\Fixture;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -33,7 +33,7 @@ final class FixtureCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $errOutput = $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output;
+        $errOutput = $output->getErrorOutput();
 
         $output->writeln('Executing <info>command</info>...');
         $output->writeln("verbosity: {$output->getVerbosity()}");
@@ -61,6 +61,11 @@ final class FixtureCommand extends Command
         }
 
         (new SymfonyStyle($input, $output))->success('Long link: https://github.com/zenstruck/console-test/blob/997ee1f66743342ffd9cd00a77613ebfa2efd2b8/src/CommandResult.php');
+
+        $table = new Table($output->section());
+        $table->addRow(['table row 1']);
+        $table->render();
+        $table->appendRow(['table row 2']);
 
         return (int) $input->getOption('code');
     }

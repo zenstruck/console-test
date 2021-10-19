@@ -4,7 +4,6 @@ namespace Zenstruck\Console\Test;
 
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\StringInput;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
@@ -91,11 +90,11 @@ final class TestCommand
 
     public function execute(?string $cli = null): CommandResult
     {
-        $cli = $cli ? \sprintf('%s %s', $this->cli, $cli) : $this->cli;
+        $status = $this->command->run(
+            $input = new TestInput($cli ? \sprintf('%s %s', $this->cli, $cli) : $this->cli, $this->inputs),
+            $output = new TestOutput($this->splitOutputStreams, $input)
+        );
 
-        $tester = new CommandTester($this->command, new StringInput($cli));
-        $tester->setInputs($this->inputs);
-
-        return $tester->execute($this->splitOutputStreams);
+        return new CommandResult($status, $output);
     }
 }
