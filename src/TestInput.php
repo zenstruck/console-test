@@ -16,7 +16,7 @@ final class TestInput extends StringInput
     {
         parent::__construct($input);
 
-        $this->setInteractive(false);
+        parent::setInteractive(false);
 
         if ($inputs) {
             $stream = \fopen('php://memory', 'r+', false);
@@ -28,12 +28,17 @@ final class TestInput extends StringInput
             \rewind($stream);
 
             $this->setStream($stream);
-            $this->setInteractive(true);
+            parent::setInteractive(true);
         }
 
         if (true === $this->hasParameterOption(['--no-interaction', '-n'], true)) {
-            $this->setInteractive(false);
+            parent::setInteractive(false);
         }
+    }
+
+    public function setInteractive($interactive): void
+    {
+        // noop, prevent Application from setting this value
     }
 
     public function isDecorated(): bool

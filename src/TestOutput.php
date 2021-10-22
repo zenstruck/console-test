@@ -48,6 +48,16 @@ final class TestOutput extends StreamOutput implements ConsoleOutputInterface
         return new ConsoleSectionOutput($this->getStream(), $this->sections, $this->getVerbosity(), $this->isDecorated(), $this->getFormatter());
     }
 
+    public function setDecorated($decorated): void
+    {
+        // noop, prevent Application from setting this value
+    }
+
+    public function setVerbosity($level): void
+    {
+        // noop, prevent Application from setting this value
+    }
+
     public function getDisplay(): string
     {
         \rewind($this->getStream());
