@@ -10,7 +10,7 @@ use Symfony\Component\Console\Command\Command;
  */
 final class TestCommand
 {
-    private Command $command;
+    private Application $application;
     private string $cli;
     private array $inputs = [];
     private bool $splitOutputStreams = false;
@@ -18,10 +18,13 @@ final class TestCommand
     private function __construct(Command $command, string $cli)
     {
         if (!$command->getApplication()) {
-            $command->setApplication(new Application());
+            $application = new Application();
+            $application->add($command);
+
+            $command->setApplication($application);
         }
 
-        $this->command = $command;
+        $this->application = $command->getApplication();
         $this->cli = $cli;
     }
 
@@ -90,10 +93,19 @@ final class TestCommand
 
     public function execute(?string $cli = null): CommandResult
     {
-        $status = $this->command->run(
+        $autoExit = $this->application->isAutoExitEnabled();
+        $catchExceptions = $this->application->areExceptionsCaught();
+
+        $this->application->setAutoExit(false);
+        $this->application->setCatchExceptions(false);
+
+        $status = $this->application->run(
             $input = new TestInput($cli ? \sprintf('%s %s', $this->cli, $cli) : $this->cli, $this->inputs),
             $output = new TestOutput($this->splitOutputStreams, $input)
         );
+
+        $this->application->setAutoExit($autoExit);
+        $this->application->setCatchExceptions($catchExceptions);
 
         return new CommandResult($status, $output);
     }
