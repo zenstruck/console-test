@@ -2,7 +2,6 @@
 
 namespace Zenstruck\Console\Test;
 
-use Symfony\Component\VarDumper\VarDumper;
 use Zenstruck\Assert;
 
 /**
@@ -10,14 +9,16 @@ use Zenstruck\Assert;
  */
 final class CommandResult
 {
+    private string $cli;
     private int $statusCode;
     private TestOutput $output;
 
     /**
      * @internal
      */
-    public function __construct(int $statusCode, TestOutput $output)
+    public function __construct(string $cli, int $statusCode, TestOutput $output)
     {
+        $this->cli = $cli;
         $this->statusCode = $statusCode;
         $this->output = $output;
     }
@@ -79,9 +80,18 @@ final class CommandResult
 
     public function dump(): self
     {
-        VarDumper::dump("Status: {$this->statusCode()}");
-        VarDumper::dump($this->output());
-        VarDumper::dump($this->errorOutput());
+        $summary = "CLI: {$this->cli}, Status: {$this->statusCode()}";
+        $output = [
+            $summary,
+            $this->output(),
+            $this->errorOutput(),
+            $summary,
+        ];
+
+        \call_user_func(
+            \function_exists('dump') ? 'dump' : 'var_dump',
+            \implode("\n\n", \array_filter($output))
+        );
 
         return $this;
     }

@@ -35,7 +35,7 @@ final class TestCommand
 
     public static function from(Application $application, string $cli): self
     {
-        foreach ($application->all() as $name => $commandObject) {
+        foreach ($application->all() as $commandObject) {
             if ($cli === \get_class($commandObject)) {
                 return self::for($commandObject);
             }
@@ -95,18 +95,19 @@ final class TestCommand
     {
         $autoExit = $this->application->isAutoExitEnabled();
         $catchExceptions = $this->application->areExceptionsCaught();
+        $cli = $cli ? \sprintf('%s %s', $this->cli, $cli) : $this->cli;
 
         $this->application->setAutoExit(false);
         $this->application->setCatchExceptions(false);
 
         $status = $this->application->run(
-            $input = new TestInput($cli ? \sprintf('%s %s', $this->cli, $cli) : $this->cli, $this->inputs),
+            $input = new TestInput($cli, $this->inputs),
             $output = new TestOutput($this->splitOutputStreams, $input)
         );
 
         $this->application->setAutoExit($autoExit);
         $this->application->setCatchExceptions($catchExceptions);
 
-        return new CommandResult($status, $output);
+        return new CommandResult($cli, $status, $output);
     }
 }
