@@ -15,18 +15,24 @@ use Symfony\Component\Console\Output\StreamOutput;
 final class TestOutput extends StreamOutput implements ConsoleOutputInterface
 {
     private ?OutputInterface $error = null;
+
+    /** @var ConsoleSectionOutput[] */
     private array $sections = [];
 
     public function __construct(bool $splitStreams, TestInput $input)
     {
-        parent::__construct(
-            \fopen('php://memory', 'w', false),
-            $input->getVerbosity(),
-            $input->isDecorated()
-        );
+        if (!$stream = \fopen('php://memory', 'w', false)) {
+            throw new \RuntimeException('Failed to open stream.');
+        }
+
+        parent::__construct($stream, $input->getVerbosity(), $input->isDecorated());
 
         if ($splitStreams) {
-            $this->error = new StreamOutput(\fopen('php://memory', 'w', false));
+            if (!$stream = \fopen('php://memory', 'w', false)) {
+                throw new \RuntimeException('Failed to open stream.');
+            }
+
+            $this->error = new StreamOutput($stream);
             $this->error->setFormatter($this->getFormatter());
             $this->error->setVerbosity($this->getVerbosity());
             $this->error->setDecorated($this->isDecorated());
@@ -48,11 +54,17 @@ final class TestOutput extends StreamOutput implements ConsoleOutputInterface
         return new ConsoleSectionOutput($this->getStream(), $this->sections, $this->getVerbosity(), $this->isDecorated(), $this->getFormatter());
     }
 
+    /**
+     * @param bool $decorated
+     */
     public function setDecorated($decorated): void
     {
         // noop, prevent Application from setting this value
     }
 
+    /**
+     * @param int $level
+     */
     public function setVerbosity($level): void
     {
         // noop, prevent Application from setting this value
@@ -62,7 +74,11 @@ final class TestOutput extends StreamOutput implements ConsoleOutputInterface
     {
         \rewind($this->getStream());
 
-        return \stream_get_contents($this->getStream());
+        if (false === $contents = \stream_get_contents($this->getStream())) {
+            throw new \RuntimeException('Failed to read stream.');
+        }
+
+        return $contents;
     }
 
     public function getErrorDisplay(): string
@@ -73,6 +89,10 @@ final class TestOutput extends StreamOutput implements ConsoleOutputInterface
 
         \rewind($this->error->getStream());
 
-        return \stream_get_contents($this->error->getStream());
+        if (false === $contents = \stream_get_contents($this->error->getStream())) {
+            throw new \RuntimeException('Failed to read stream.');
+        }
+
+        return $contents;
     }
 }

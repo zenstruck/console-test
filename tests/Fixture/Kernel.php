@@ -36,6 +36,11 @@ final class Kernel extends BaseKernel
         ]);
     }
 
+    /**
+     * BC Layer.
+     *
+     * @param mixed $routes
+     */
     protected function configureRoutes($routes): void
     {
         // noop

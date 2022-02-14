@@ -12,25 +12,27 @@ final class TestCommand
 {
     private Application $application;
     private string $cli;
+
+    /** @var string[] */
     private array $inputs = [];
     private bool $splitOutputStreams = false;
 
     private function __construct(Command $command, string $cli)
     {
-        if (!$command->getApplication()) {
+        if (!$application = $command->getApplication()) {
             $application = new Application();
             $application->add($command);
 
             $command->setApplication($application);
         }
 
-        $this->application = $command->getApplication();
+        $this->application = $application;
         $this->cli = $cli;
     }
 
     public static function for(Command $command): self
     {
-        return new self($command, $command->getName());
+        return new self($command, (string) $command->getName());
     }
 
     public static function from(Application $application, string $cli): self
@@ -59,7 +61,7 @@ final class TestCommand
     }
 
     /**
-     * @param string|array|null $value
+     * @param string|string[]|null $value
      */
     public function addOption(string $name, $value = null): self
     {
@@ -84,6 +86,9 @@ final class TestCommand
         return $this;
     }
 
+    /**
+     * @param string[] $inputs
+     */
     public function withInput(array $inputs): self
     {
         $this->inputs = $inputs;

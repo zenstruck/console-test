@@ -12,6 +12,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 final class TestInput extends StringInput
 {
+    /**
+     * @param string[] $inputs
+     */
     public function __construct(string $input, array $inputs)
     {
         parent::__construct($input);
@@ -19,7 +22,9 @@ final class TestInput extends StringInput
         parent::setInteractive(false);
 
         if ($inputs) {
-            $stream = \fopen('php://memory', 'r+', false);
+            if (!$stream = \fopen('php://memory', 'r+', false)) {
+                throw new \RuntimeException('Failed to open stream.');
+            }
 
             foreach ($inputs as $value) {
                 \fwrite($stream, $value.\PHP_EOL);
@@ -36,6 +41,9 @@ final class TestInput extends StringInput
         }
     }
 
+    /**
+     * @param bool $interactive
+     */
     public function setInteractive($interactive): void
     {
         // noop, prevent Application from setting this value
