@@ -4,6 +4,7 @@ namespace Zenstruck\Console\Test;
 
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
+use Zenstruck\Assert;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
@@ -15,6 +16,10 @@ final class TestCommand
 
     /** @var string[] */
     private array $inputs = [];
+
+    /** @var callable|class-string|null */
+    private $expectedException;
+    private ?string $expectedExceptionMessage = null;
     private bool $splitOutputStreams = false;
 
     private function __construct(Command $command, string $cli)
@@ -96,6 +101,25 @@ final class TestCommand
         return $this;
     }
 
+    /**
+     * Expect executing the command will throw this exception. Fails if not thrown.
+     *
+     * @param class-string|callable $expectedException string: class name of the expected exception
+     *                                                 callable: uses the first argument's type-hint
+     *                                                 to determine the expected exception class. When
+     *                                                 exception is caught, callable is invoked with
+     *                                                 the caught exception
+     * @param string|null           $expectedMessage   Assert the caught exception message "contains"
+     *                                                 this string
+     */
+    public function expectException($expectedException, ?string $expectedMessage = null): self
+    {
+        $this->expectedException = $expectedException;
+        $this->expectedExceptionMessage = $expectedMessage;
+
+        return $this;
+    }
+
     public function execute(?string $cli = null): CommandResult
     {
         $autoExit = $this->application->isAutoExitEnabled();
@@ -105,7 +129,7 @@ final class TestCommand
         $this->application->setAutoExit(false);
         $this->application->setCatchExceptions(false);
 
-        $status = $this->application->run(
+        $status = $this->doRun(
             $input = new TestInput($cli, $this->inputs),
             $output = new TestOutput($this->splitOutputStreams, $input)
         );
@@ -114,5 +138,18 @@ final class TestCommand
         $this->application->setCatchExceptions($catchExceptions);
 
         return new CommandResult($cli, $status, $output);
+    }
+
+    private function doRun(TestInput $input, TestOutput $output): int
+    {
+        $fn = fn() => $this->application->run($input, $output);
+
+        if (!$this->expectedException) {
+            return $fn();
+        }
+
+        Assert::that($fn)->throws($this->expectedException, $this->expectedExceptionMessage);
+
+        return 1;
     }
 }

@@ -1,7 +1,6 @@
 # zenstruck/console-test
 
 [![CI Status](https://github.com/zenstruck/console-test/workflows/CI/badge.svg)](https://github.com/zenstruck/console-test/actions?query=workflow%3ACI)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/zenstruck/console-test/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/zenstruck/console-test/?branch=1.x)
 [![codecov](https://codecov.io/gh/zenstruck/console-test/branch/1.x/graph/badge.svg?token=KPQNKYGYRR)](https://codecov.io/gh/zenstruck/console-test)
 
 Alternative, opinionated helper for testing Symfony console commands. This package is an alternative to
@@ -71,6 +70,13 @@ class CreateUserCommandTest extends KernelTestCase
             ->assertOutputContains('Creating regular user "kbond"')
         ;
 
+        // test command throws exception
+        $this->consoleCommand(CreateUserCommand::class)
+            ->expectException(\RuntimeException::class, 'Username required!')
+            ->assertStatusCode(1)
+            ->assertOutputContains('Could not create user!') // can still make assertions on output before exception was thrown
+        ;
+
         // access result
         $result = $this->executeConsoleCommand('create:user');
 
@@ -128,6 +134,13 @@ class CreateUserCommandTest extends TestCase
             ->execute()
             ->assertSuccessful()
             ->assertOutputContains('Creating regular user "kbond"')
+        ;
+
+        // test command throws exception
+        TestCommand::for(new CreateUserCommand(/** args... */))
+            ->expectException(\RuntimeException::class, 'Username required!')
+            ->assertStatusCode(1)
+            ->assertOutputContains('Could not create user!') // can still make assertions on output before exception was thrown
         ;
 
         // access result
