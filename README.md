@@ -71,6 +71,13 @@ class CreateUserCommandTest extends KernelTestCase
             ->assertOutputContains('Creating regular user "kbond"')
         ;
 
+        // test command throws exception
+        $this->consoleCommand(CreateUserCommand::class)
+            ->expectException(\RuntimeException::class, 'Username required!')
+            ->assertStatusCode(1)
+            ->assertOutputContains('Could not create user!') // can still make assertions on output before exception was thrown
+        ;
+
         // access result
         $result = $this->executeConsoleCommand('create:user');
 
@@ -128,6 +135,13 @@ class CreateUserCommandTest extends TestCase
             ->execute()
             ->assertSuccessful()
             ->assertOutputContains('Creating regular user "kbond"')
+        ;
+
+        // test command throws exception
+        TestCommand::for(new CreateUserCommand(/** args... */))
+            ->expectException(\RuntimeException::class, 'Username required!')
+            ->assertStatusCode(1)
+            ->assertOutputContains('Could not create user!') // can still make assertions on output before exception was thrown
         ;
 
         // access result

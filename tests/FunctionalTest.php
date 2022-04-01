@@ -2,8 +2,10 @@
 
 namespace Zenstruck\Console\Test\Tests;
 
+use PHPUnit\Framework\AssertionFailedError;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
+use Zenstruck\Assert;
 use Zenstruck\Console\Test\InteractsWithConsole;
 use Zenstruck\Console\Test\Tests\Fixture\FixtureCommand;
 
@@ -134,6 +136,58 @@ final class FunctionalTest extends KernelTestCase
         $this->expectExceptionMessage('Exception thrown!');
 
         $this->consoleCommand('fixture:command --throw')->execute();
+    }
+
+    /**
+     * @test
+     */
+    public function can_expect_exception(): void
+    {
+        $this->consoleCommand('fixture:command --throw')
+            ->expectException(\RuntimeException::class)
+            ->execute()
+            ->assertStatusCode(1)
+            ->assertOutputContains('Executing command...')
+            ->assertOutputContains('Error output.')
+        ;
+
+        $this->consoleCommand('fixture:command --throw')
+            ->expectException(\RuntimeException::class, 'Exception thrown!')
+            ->execute()
+            ->assertStatusCode(1)
+            ->assertOutputContains('Executing command...')
+            ->assertOutputContains('Error output.')
+        ;
+
+        $this->consoleCommand('fixture:command --throw')
+            ->expectException(function(\RuntimeException $e) {
+                $this->assertSame('Exception thrown!', $e->getMessage());
+            })
+            ->execute()
+            ->assertStatusCode(1)
+            ->assertOutputContains('Executing command...')
+            ->assertOutputContains('Error output.')
+        ;
+    }
+
+    /**
+     * @test
+     */
+    public function if_expected_exception_not_thrown_fail(): void
+    {
+        Assert::that(function() {
+            $this->consoleCommand('fixture:command')
+                ->expectException(\RuntimeException::class)
+                ->execute()
+            ;
+        })->throws(AssertionFailedError::class, 'No exception thrown. Expected "RuntimeException".');
+
+        Assert::that(function() {
+            $this->consoleCommand('fixture:command --throw')
+                ->expectException(\LogicException::class)
+                ->execute()
+            ;
+        })->throws(AssertionFailedError::class, 'Expected "LogicException" to be thrown but got "RuntimeException".');
     }
 
     /**
