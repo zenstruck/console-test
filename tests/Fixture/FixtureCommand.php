@@ -17,7 +17,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 final class FixtureCommand extends Command
 {
-    protected static $defaultName = 'fixture:command';
+    public static function getDefaultName(): string
+    {
+        return 'fixture:command';
+    }
 
     protected function configure(): void
     {
