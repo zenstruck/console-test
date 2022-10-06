@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## [v1.4.0](https://github.com/zenstruck/console-test/releases/tag/v1.4.0)
+
+October 6th, 2022 - [v1.3.0...v1.4.0](https://github.com/zenstruck/console-test/compare/v1.3.0...v1.4.0)
+
+* d259ce4 [feature] add ability to test command completion (#15) by @kbond
+* 686fbd2 [minor] simplify sca gha (#14) by @kbond
+* 5995408 [minor] support Symfony 6.1 (#11) by @kbond
+
 ## [v1.3.0](https://github.com/zenstruck/console-test/releases/tag/v1.3.0)
 
 April 1st, 2022 - [v1.2.0...v1.3.0](https://github.com/zenstruck/console-test/compare/v1.2.0...v1.3.0)
