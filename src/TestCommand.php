@@ -4,7 +4,9 @@ namespace Zenstruck\Console\Test;
 
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Tester\CommandCompletionTester;
 use Zenstruck\Assert;
+use Zenstruck\Console\Test\Assert\CompletionExpectation;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
@@ -13,6 +15,7 @@ final class TestCommand
 {
     private Application $application;
     private string $cli;
+    private Command $command;
 
     /** @var string[] */
     private array $inputs = [];
@@ -33,6 +36,7 @@ final class TestCommand
 
         $this->application = $application;
         $this->cli = $cli;
+        $this->command = $command;
     }
 
     public static function for(Command $command): self
@@ -138,6 +142,14 @@ final class TestCommand
         $this->application->setCatchExceptions($catchExceptions);
 
         return new CommandResult($cli, $status, $output);
+    }
+
+    public function complete(string $cli): CompletionExpectation
+    {
+        return new CompletionExpectation(
+            $this,
+            Assert::that((new CommandCompletionTester($this->command))->complete(\explode(' ', $cli)))
+        );
     }
 
     private function doRun(TestInput $input, TestOutput $output): int

@@ -3,6 +3,11 @@
 namespace Zenstruck\Console\Test\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Completion\CompletionInput;
+use Symfony\Component\Console\Completion\CompletionSuggestions;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\HttpKernel\Kernel;
 use Zenstruck\Console\Test\TestCommand;
 use Zenstruck\Console\Test\Tests\Fixture\FixtureCommand;
 
@@ -191,6 +196,91 @@ final class UnitTest extends TestCase
             ->execute()
             ->assertOutputContains('table row 1')
             ->assertOutputContains('table row 2')
+        ;
+    }
+
+    /**
+     * @test
+     */
+    public function completion(): void
+    {
+        if (!\class_exists(CompletionInput::class)) {
+            $this->markTestSkipped('Command completion not available.');
+        }
+
+        $command = TestCommand::for(new class() extends Command {
+            public function getName(): string
+            {
+                return 'my:command';
+            }
+
+            public function configure(): void
+            {
+                $this
+                    ->addArgument('user')
+                    ->addOption('message', null, InputOption::VALUE_REQUIRED)
+                ;
+            }
+
+            public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
+            {
+                if ($input->mustSuggestArgumentValuesFor('user')) {
+                    $suggestions->suggestValues(['kevin', 'john', 'jane']);
+                }
+
+                if ($input->mustSuggestOptionValuesFor('message')) {
+                    $suggestions->suggestValues(['hello', 'hi', 'greetings']);
+                }
+            }
+        });
+
+        $command
+            ->complete('')
+            ->is(['kevin', 'john', 'jane'])
+            ->contains('kevin')
+            ->back()
+            ->complete('ke')->is(['kevin', 'john', 'jane'])->back()
+            ->complete('kevin --message=')->is(['hello', 'hi', 'greetings'])->back()
+            ->complete('kevin --message=g')->is(['hello', 'hi', 'greetings'])->back()
+        ;
+    }
+
+    /**
+     * @test
+     */
+    public function completion_61(): void
+    {
+        if (!\class_exists(CompletionInput::class)) {
+            $this->markTestSkipped('Command completion not available.');
+        }
+
+        if (Kernel::VERSION_ID < 60100) {
+            $this->markTestSkipped('Using InputArgument/Option for defining suggestions requires 6.1+.');
+        }
+
+        $command = TestCommand::for(new class() extends Command {
+            public function getName(): string
+            {
+                return 'my:command';
+            }
+
+            public function configure(): void
+            {
+                $this
+                    ->addArgument('user', null, '', null, ['kevin', 'john', 'jane'])
+                    ->addOption('message', null, InputOption::VALUE_REQUIRED, '', null, ['hello', 'hi', 'greetings'])
+                ;
+            }
+        });
+
+        $command
+            ->complete('')
+                ->is(['kevin', 'john', 'jane'])
+                ->contains('kevin')
+            ->back()
+            ->complete('ke')->is(['kevin', 'john', 'jane'])->back()
+            ->complete('kevin --message=')->is(['hello', 'hi', 'greetings'])->back()
+            ->complete('kevin --message=g')->is(['hello', 'hi', 'greetings'])->back()
         ;
     }
 }
