@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
+use Symfony\Component\Console\Helper\OutputWrapper;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\HttpKernel\Kernel;
 use Zenstruck\Console\Test\TestCommand;
@@ -180,6 +181,10 @@ final class UnitTest extends TestCase
      */
     public function terminal_width_is_standardized(): void
     {
+        if (\class_exists(OutputWrapper::class)) {
+            $this->markTestSkipped('6.2 handles this.');
+        }
+
         TestCommand::for(new FixtureCommand())
             ->execute()
             ->assertOutputContains(' [OK] Long link:                                                                                                        ')
