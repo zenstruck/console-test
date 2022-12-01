@@ -5,6 +5,7 @@ namespace Zenstruck\Console\Test\Tests;
 use PHPUnit\Framework\AssertionFailedError;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
+use Symfony\Component\Console\Helper\OutputWrapper;
 use Zenstruck\Assert;
 use Zenstruck\Console\Test\InteractsWithConsole;
 use Zenstruck\Console\Test\Tests\Fixture\FixtureCommand;
@@ -250,6 +251,10 @@ final class FunctionalTest extends KernelTestCase
      */
     public function terminal_width_is_standardized(): void
     {
+        if (\class_exists(OutputWrapper::class)) {
+            $this->markTestSkipped('6.2 handles this.');
+        }
+
         $this->executeConsoleCommand('fixture:command')
             ->assertOutputContains(' [OK] Long link:                                                                                                        ')
             ->assertOutputContains('      https://github.com/zenstruck/console-test/blob/997ee1f66743342ffd9cd00a77613ebfa2efd2b8/src/CommandResult.php     ')

@@ -154,7 +154,7 @@ final class TestCommand
 
     private function doRun(TestInput $input, TestOutput $output): int
     {
-        $fn = fn() => $this->application->run($input, $output);
+        $fn = fn () => $this->application->run($input, $output);
 
         if (!$this->expectedException) {
             return $fn();
