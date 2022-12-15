@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the zenstruck/console-test package.
+ *
+ * (c) Kevin Bond <kevinbond@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Zenstruck\Console\Test;
 
 use Symfony\Component\Console\Application;
@@ -75,7 +84,7 @@ final class TestCommand
     public function addOption(string $name, $value = null): self
     {
         $name = 0 !== \mb_strpos($name, '-') ? "--{$name}" : $name;
-        $value = $value ?? [null];
+        $value ??= [null];
 
         foreach ((array) $value as $item) {
             $this->cli .= " {$name}";
@@ -154,7 +163,7 @@ final class TestCommand
 
     private function doRun(TestInput $input, TestOutput $output): int
     {
-        $fn = fn () => $this->application->run($input, $output);
+        $fn = fn() => $this->application->run($input, $output);
 
         if (!$this->expectedException) {
             return $fn();
