@@ -56,7 +56,7 @@ final class TestCommand
     public static function from(Application $application, string $cli): self
     {
         foreach ($application->all() as $commandObject) {
-            if ($cli === \get_class($commandObject)) {
+            if ($cli === $commandObject::class) {
                 return self::for($commandObject);
             }
         }
