@@ -4,7 +4,7 @@
     "homepage": "https://github.com/zenstruck/console-test",
     "type": "library",
     "license": "MIT",
-    "keywords": ["console", "symfony", "test", "command"],
+    "keywords": ["console", "symfony", "test", "command", "dev"],
     "authors": [
         {
             "name": "Kevin Bond",
@@ -13,14 +13,14 @@
     ],
     "require": {
         "php": ">=8.0",
-        "symfony/console": "^5.4|^6.0",
+        "symfony/console": "^5.4|^6.0|^7.0",
         "zenstruck/assert": "^1.0"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.4",
         "phpunit/phpunit": "^9.5.0",
-        "symfony/framework-bundle": "^5.4|^6.0",
-        "symfony/phpunit-bridge": "^6.2"
+        "symfony/framework-bundle": "^5.4|^6.0|^7.0",
+        "symfony/phpunit-bridge": "^6.2|^7.0"
     },
     "config": {
         "preferred-install": "dist",
