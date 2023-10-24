@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [v1.5.0](https://github.com/zenstruck/console-test/releases/tag/v1.5.0)
+
+October 24th, 2023 - [v1.4.0...v1.5.0](https://github.com/zenstruck/console-test/compare/v1.4.0...v1.5.0)
+
+* cd1366d feat: Symfony 7 support (#19) by @kbond
+* d0ed4fe chore: run php-cs-fixer on php 8 by @kbond
+* 5fe2744 feat: require php 8+, symfony 5.4+ (#18) by @kbond
+* 2eb231b fix(ci): add token by @kbond
+* 11fb61f chore(ci): fix by @kbond
+* 6019627 chore: update ci config (#17) by @kbond
+* e5c000b ci: fix (#16) by @kbond
+
 ## [v1.4.0](https://github.com/zenstruck/console-test/releases/tag/v1.4.0)
 
 October 6th, 2022 - [v1.3.0...v1.4.0](https://github.com/zenstruck/console-test/compare/v1.3.0...v1.4.0)
