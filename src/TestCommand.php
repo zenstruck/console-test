@@ -144,7 +144,7 @@ final class TestCommand
 
         $status = $this->doRun(
             $input = new TestInput($cli, $this->inputs),
-            $output = new TestOutput($this->splitOutputStreams, $input)
+            $output = new TestOutput($this->splitOutputStreams, $input),
         );
 
         $this->application->setAutoExit($autoExit);
@@ -157,7 +157,7 @@ final class TestCommand
     {
         return new CompletionExpectation(
             $this,
-            Assert::that((new CommandCompletionTester($this->command))->complete(\explode(' ', $cli)))
+            Assert::that((new CommandCompletionTester($this->command))->complete(\explode(' ', $cli))),
         );
     }
 

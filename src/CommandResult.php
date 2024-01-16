@@ -99,7 +99,7 @@ final class CommandResult
 
         \call_user_func(
             \function_exists('dump') ? 'dump' : 'var_dump',
-            \implode("\n\n", \array_filter($output))
+            \implode("\n\n", \array_filter($output)),
         );
 
         return $this;
