@@ -73,7 +73,7 @@ class CreateUserCommandTest extends KernelTestCase
         // test command throws exception
         $this->consoleCommand(CreateUserCommand::class)
             ->expectException(\RuntimeException::class, 'Username required!')
-            ->assertStatusCode(1)
+            ->assertStatusCode(1) // equivalent to ->assertFaulty()
             ->assertOutputContains('Could not create user!') // can still make assertions on output before exception was thrown
         ;
 

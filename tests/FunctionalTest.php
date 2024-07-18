@@ -165,6 +165,7 @@ final class FunctionalTest extends KernelTestCase
             ->expectException(\RuntimeException::class, 'Exception thrown!')
             ->execute()
             ->assertStatusCode(1)
+            ->assertFaulty()
             ->assertOutputContains('Executing command...')
             ->assertOutputContains('Error output.')
         ;

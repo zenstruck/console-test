@@ -80,6 +80,13 @@ final class CommandResult
         return $this->assertStatusCode(0);
     }
 
+    public function assertFaulty(): self
+    {
+        Assert::that($this->statusCode() > 0);
+
+        return $this;
+    }
+
     public function assertStatusCode(int $expected): self
     {
         Assert::that($this->statusCode())->is($expected);
