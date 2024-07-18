@@ -1,2 +1,11 @@
-/.github export-ignore
-/tests export-ignore
+# This file was partly modified by the lean package validator (http://git.io/lean-package-validator).
+
+.codecov.yml export-ignore
+.editorconfig export-ignore
+.gitattributes export-ignore
+.github/ export-ignore
+.gitignore export-ignore
+.php-cs-fixer.dist.php export-ignore
+phpstan.neon export-ignore
+phpunit.xml.dist export-ignore
+tests/ export-ignore
