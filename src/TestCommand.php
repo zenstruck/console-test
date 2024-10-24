@@ -89,7 +89,7 @@ final class TestCommand
         foreach ((array) $value as $item) {
             $this->cli .= " {$name}";
 
-            if ($item) {
+            if (null !== $item) {
                 $this->cli .= \sprintf('="%s"', $item);
             }
         }
