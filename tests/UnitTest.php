@@ -18,6 +18,7 @@ use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Helper\OutputWrapper;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\HttpKernel\Kernel;
+use Zenstruck\Console\Test\InteractsWithConsole;
 use Zenstruck\Console\Test\TestCommand;
 use Zenstruck\Console\Test\Tests\Fixture\FixtureCommand;
 
@@ -296,5 +297,28 @@ final class UnitTest extends TestCase
             ->complete('kevin --message=')->is(['hello', 'hi', 'greetings'])->back()
             ->complete('kevin --message=g')->is(['hello', 'hi', 'greetings'])->back()
         ;
+    }
+
+    /**
+     * @test
+     */
+    public function trait_throws_when_not_in_kernel_test_case(): void
+    {
+        $testClass = new class {
+            use InteractsWithConsole;
+
+            /**
+             * @test
+             */
+            public function test(): void
+            {
+                $this->consoleCommand('my:command');
+            }
+        };
+
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('The Zenstruck\Console\Test\InteractsWithConsole trait can only be used with Symfony\Bundle\FrameworkBundle\Test\KernelTestCase.');
+
+        (new $testClass())->test();
     }
 }
