@@ -37,6 +37,7 @@ final class FunctionalTest extends KernelTestCase
             ->assertOutputNotContains('arg1')
             ->assertOutputNotContains('opt1')
             ->assertOutputContains('Error output')
+            ->assertOutputNotEmpty()
         ;
     }
 
@@ -242,6 +243,32 @@ final class FunctionalTest extends KernelTestCase
     {
         $this->executeConsoleCommand('fixture:command -vv')
             ->assertOutputContains('verbosity: 128')
+        ;
+    }
+
+    /**
+     * @test
+     */
+    public function can_turn_off_output(): void
+    {
+        $this->consoleCommand('fixture:command --no-output')
+            ->splitOutputStreams()
+            ->execute()
+            ->assertOutputEmpty()
+            ->assertErrorOutputNotEmpty()
+        ;
+    }
+
+    /**
+     * @test
+     */
+    public function can_turn_off_error_output(): void
+    {
+        $this->consoleCommand('fixture:command --no-error-output')
+            ->splitOutputStreams()
+            ->execute()
+            ->assertOutputNotEmpty()
+            ->assertErrorOutputEmpty()
         ;
     }
 
