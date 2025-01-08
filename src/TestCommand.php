@@ -13,6 +13,7 @@ namespace Zenstruck\Console\Test;
 
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Command\LazyCommand;
 use Symfony\Component\Console\Tester\CommandCompletionTester;
 use Zenstruck\Assert;
 use Zenstruck\Console\Test\Assert\CompletionExpectation;
@@ -56,6 +57,10 @@ final class TestCommand
     public static function from(Application $application, string $cli): self
     {
         foreach ($application->all() as $commandObject) {
+            if ($commandObject instanceof LazyCommand) {
+                $commandObject = $commandObject->getCommand();
+            }
+
             if ($cli === $commandObject::class) {
                 return self::for($commandObject);
             }
