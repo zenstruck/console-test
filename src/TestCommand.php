@@ -57,9 +57,10 @@ final class TestCommand
     public static function from(Application $application, string $cli): self
     {
         foreach ($application->all() as $commandObject) {
-            if (class_exists(LazyCommand::class) && $commandObject instanceof LazyCommand) {
+            if ($commandObject instanceof LazyCommand) {
                 $commandObject = $commandObject->getCommand();
             }
+
             if ($cli === $commandObject::class) {
                 return self::for($commandObject);
             }

@@ -11,6 +11,7 @@
 
 namespace Zenstruck\Console\Test\Tests\Fixture;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -24,17 +25,15 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
+#[AsCommand(
+    name: 'fixture:command',
+    description: 'zenstruck/console-test command for tests',
+)]
 final class FixtureCommand extends Command
 {
-    public static function getDefaultName(): string
-    {
-        return 'fixture:command';
-    }
-
     protected function configure(): void
     {
         $this
-            ->setDescription('zenstruck/console-test command for tests')
             ->addArgument('arg1', InputArgument::OPTIONAL)
             ->addOption('opt1', null, InputOption::VALUE_NONE)
             ->addOption('opt2', null, InputOption::VALUE_REQUIRED)

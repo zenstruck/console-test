@@ -36,10 +36,6 @@ final class Kernel extends BaseKernel
             ->setAutoconfigured(true)
             ->setAutowired(true)
         ;
-        $c->register(FixtureAttributeCommand::class)
-            ->setAutoconfigured(true)
-            ->setAutowired(true)
-        ;
         $c->register('logger', NullLogger::class);
         $c->loadFromExtension('framework', [
             'secret' => 'S3CRET',

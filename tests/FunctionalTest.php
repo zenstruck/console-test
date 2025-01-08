@@ -17,7 +17,6 @@ use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Helper\OutputWrapper;
 use Zenstruck\Assert;
 use Zenstruck\Console\Test\InteractsWithConsole;
-use Zenstruck\Console\Test\Tests\Fixture\FixtureAttributeCommand;
 use Zenstruck\Console\Test\Tests\Fixture\FixtureCommand;
 
 /**
@@ -65,19 +64,6 @@ final class FunctionalTest extends KernelTestCase
     public function class_name_command_with_no_arguments(): void
     {
         $this->executeConsoleCommand(FixtureCommand::class)
-            ->assertSuccessful()
-            ->assertOutputContains('Executing command')
-            ->assertOutputNotContains('arg1')
-            ->assertOutputNotContains('opt1')
-        ;
-    }
-
-    /**
-     * @test
-     */
-    public function class_name_command_with_no_arguments_defined_with_attribute(): void
-    {
-        $this->executeConsoleCommand(FixtureAttributeCommand::class)
             ->assertSuccessful()
             ->assertOutputContains('Executing command')
             ->assertOutputNotContains('arg1')
