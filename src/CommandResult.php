@@ -61,6 +61,20 @@ final class CommandResult
         return $this;
     }
 
+    public function assertOutputEmpty(): self
+    {
+        Assert::that($this->output())->isEmpty();
+
+        return $this;
+    }
+
+    public function assertOutputNotEmpty(): self
+    {
+        Assert::that($this->output())->isNotEmpty();
+
+        return $this;
+    }
+
     public function assertErrorOutputContains(string $expected): self
     {
         Assert::that($this->errorOutput())->contains($expected);
@@ -71,6 +85,20 @@ final class CommandResult
     public function assertErrorOutputNotContains(string $expected): self
     {
         Assert::that($this->errorOutput())->doesNotContain($expected);
+
+        return $this;
+    }
+
+    public function assertErrorOutputEmpty(): self
+    {
+        Assert::that($this->errorOutput())->isEmpty();
+
+        return $this;
+    }
+
+    public function assertErrorOutputNotEmpty(): self
+    {
+        Assert::that($this->errorOutput())->isNotEmpty();
 
         return $this;
     }
