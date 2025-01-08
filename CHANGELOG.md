@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## [v1.7.0](https://github.com/zenstruck/console-test/releases/tag/v1.7.0)
+
+January 8th, 2025 - [v1.6.1...v1.7.0](https://github.com/zenstruck/console-test/compare/v1.6.1...v1.7.0)
+
+* 61189de feat: Add `assertOutputEmpty`/`NotEmpty` and `assertErrorOutputEmpty`/`NotEmpty` (#26) by @smnandre
+* c7347a2 minor: Complete InteractsWithConsole test coverage (#25) by @smnandre
+* 44b4af3 fix: unwrap `LazyCommand` (#27) by @kbond, Jérémy
+
 ## [v1.6.1](https://github.com/zenstruck/console-test/releases/tag/v1.6.1)
 
 October 28th, 2024 - [v1.6.0...v1.6.1](https://github.com/zenstruck/console-test/compare/v1.6.0...v1.6.1)
