@@ -7,6 +7,9 @@ Alternative, opinionated helper for testing Symfony console commands. This packa
 [`Symfony\Component\Console\Tester\CommandTester`](https://symfony.com/doc/current/console.html#testing-commands)
 and helps make your tests more expressive and concise.
 
+> [!TIP]
+> Want to watch a screencast 🎥 about it? Check out [symfonycasts.com/console-test](https://symfonycasts.com/console-test).
+
 ## Installation
 
 ```bash
