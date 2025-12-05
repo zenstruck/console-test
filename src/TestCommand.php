@@ -39,7 +39,7 @@ final class TestCommand
     {
         if (!$application = $command->getApplication()) {
             $application = new Application();
-            $application->add($command);
+            $application->{\method_exists($application, 'addCommand') ? 'addCommand' : 'add'}($command);
 
             $command->setApplication($application);
         }
