@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## [v1.8.0](https://github.com/zenstruck/console-test/releases/tag/v1.8.0)
+
+December 5th, 2025 - [v1.7.0...v1.8.0](https://github.com/zenstruck/console-test/compare/v1.7.0...v1.8.0)
+
+* 408575c feat: Add support for Symfony 8 (#30) by @Kocal
+* 2124ed0 fix: `Application::add()` -> `addCommand()` (#31) by @kbond
+* e161188 doc: add screencast link by @kbond
+
 ## [v1.7.0](https://github.com/zenstruck/console-test/releases/tag/v1.7.0)
 
 January 8th, 2025 - [v1.6.1...v1.7.0](https://github.com/zenstruck/console-test/compare/v1.6.1...v1.7.0)
